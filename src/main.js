@@ -1,14 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const carsRouter = require('./routers/cars-router');
 
 const server = express();
 
-const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT } = process.env;
-const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT;
+const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION_ADMIN } = process.env;
+const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION_ADMIN;
 
 try {
   if (!constantsConfiguredInEnvFile) {
@@ -23,13 +24,20 @@ try {
   // Routes
   server.use('/cars', carsRouter);
 
-  server.listen(SERVER_PORT, (err) => {
+  mongoose.connect(DB_CONNECTION_ADMIN, (err) => {
     if (err) {
-      console.error('Serverio paleidimo klaida');
+      throw err.message;
     }
+    console.log('connected to MongoDB Atlass');
+    server.listen(SERVER_PORT, (err) => {
+      if (err) {
+        console.error('Serverio paleidimo klaida');
+      }
 
-    console.log(`serveris veikia ant ${SERVER_PROTOCOL}://${SERVER_DOMAIN}:${SERVER_PORT}`);
+      console.log(`serveris veikia ant ${SERVER_PROTOCOL}://${SERVER_DOMAIN}:${SERVER_PORT}`);
+    });
   });
+
 } catch (err) {
   console.error(err.message);
 }
