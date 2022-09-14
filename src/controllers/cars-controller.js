@@ -1,9 +1,6 @@
 const { removeEmptyProps } = require('../helpers');
 const CarModel = require('../models/car-model');
 
-let counter = 1;
-const createId = () => String(++counter);
-
 const isValidCar = ({
   model,
   engine,
@@ -26,8 +23,6 @@ const isValidCar = ({
 && price !== undefined && typeof price === 'string' && price !== ''
 && img !== undefined && typeof img === 'string' && img !== '';
 
-const createCmpById = (carId) => ({ id }) => id === carId;
-
 const createCarNotFoundError = (carId) => ({
   message: `Car with id '${carId}' was not found`,
   status: 404
@@ -38,151 +33,17 @@ const createCarBadDataError = (dataObj) => ({
   status: 400
 });
 
-const database = {
-  cars: [{
-    id: "100",
-    model: 'Aston Martin Vantage F1 Edition',
-    engine: '4,0 L V8 Twin Turbo',
-    categoryId: "1",
-    color: 'Lunar White',
-    gearbox: 'Automatinė',
-    maxSpeed: '354 km/h',
-    power: '527 AG (387kW)',
-    zeroToHundred: '3,6 s',
-    price: '190 796 €',
-    img: 'https://i.imgur.com/g07oIWY.jpg',
-  },
-  {
-    id: "101",
-    model: 'Aston Martin Vantage F1 Edition',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "1",
-    color: 'Jet Black',
-    gearbox: 'Automatinė',
-    maxSpeed: '354 km/h',
-    power: '527 AG (387kW)',
-    zeroToHundred: '3,6 s',
-    price: '190 456 €',
-    img: 'https://i.imgur.com/10HEpLT.jpg',
-  },
-  {
-    id: "102",
-    model: 'Aston Martin Vantage',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "1",
-    color: 'Golden Saffron',
-    gearbox: 'Automatinė',
-    maxSpeed: '354 km/h',
-    power: '527 AG (387kW)',
-    zeroToHundred: '3,6 s',
-    price: '178 814 €',
-    img: 'https://i.imgur.com/ERzM1ED.jpg',
-  },
-  {
-    id: "103",
-    model: 'Aston Martin Vantage',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "1",
-    color: 'China Gray',
-    gearbox: 'Automatinė',
-    maxSpeed: '354 km/h',
-    power: '503 AG (375kW)',
-    zeroToHundred: '3,6 s',
-    price: '184 944 €',
-    img: 'https://i.imgur.com/rXZefm1.jpg',
-  },
-  {
-    id: "104",
-    model: 'Aston Martin DBX',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "2",
-    color: 'Onyx Black',
-    gearbox: 'Automatinė',
-    maxSpeed: '317 km/h',
-    power: '551 AG (405kW)',
-    zeroToHundred: '4,5 s',
-    price: '239 682 €',
-    img: 'https://i.imgur.com/5xYLdpH.jpg',
-  },
-  {
-    id: "105",
-    model: 'Aston Martin DBX',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "2",
-    color: 'Minotaur Green',
-    gearbox: 'Automatinė',
-    maxSpeed: '317 km/h',
-    power: '551 AG (405kW)',
-    zeroToHundred: '4,5 s',
-    price: '222 674 €',
-    img: 'https://i.imgur.com/s2kEGBw.jpg',
-  },
-  {
-    id: "106",
-    model: 'Aston Martin DBX707',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "2",
-    color: 'Titanium Gray',
-    gearbox: 'Automatinė',
-    maxSpeed: '310 km/h',
-    power: '707 AG (520kW)',
-    zeroToHundred: '3,3 s',
-    price: '267 948 €',
-    img: 'https://i.imgur.com/IDc1FZF.jpg',
-  },
-  {
-    id: "107",
-    model: 'Aston Martin Vantage',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "1",
-    color: 'Marine Blue',
-    gearbox: 'Automatinė',
-    maxSpeed: '317 km/h',
-    power: '510 AG (375kW)',
-    zeroToHundred: '3,6 s',
-    price: '154 750 €',
-    img: 'https://i.imgur.com/2Nhxtmd.jpg',
-  },
-  {
-    id: "108",
-    model: 'Aston Martin DBX',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "2",
-    color: 'Contemporary',
-    gearbox: 'Automatinė',
-    maxSpeed: '317 km/h',
-    power: '551 AG (405kW)',
-    zeroToHundred: '4,5 s',
-    price: '227 966 €',
-    img: 'https://i.imgur.com/6ESmkNq.jpg',
-  },
-  {
-    id: "109",
-    model: 'Aston Martin DBX',
-    engine: '4.0 L V8 Twin Turbo',
-    categoryId: "2",
-    color: 'Contemporary Minotaur Green',
-    gearbox: 'Automatinė',
-    maxSpeed: '317 km/h',
-    power: '551 AG (405kW)',
-    zeroToHundred: '20',
-    price: '222 644 €',
-    img: 'https://i.imgur.com/C1P5ORC.jpg',
-  },
-  ],
-};
-
 const fetchAll = async (req, res) => {
   const carDocuments = await CarModel.find();
 
-  res.status(200).json(database.cars);
+  res.status(200).json(carDocuments);
 };
 
-const fetch = (req, res) => {
+const fetch = async (req, res) => {
   const carId = req.params.id;
 
   try {
-    const foundCar = database.cars.find(createCmpById(carId));
+    const foundCar = await CarModel.findById(carId);
     if (foundCar === undefined) throw createCarNotFoundError(carId);
 
     res.status(200).json(foundCar);
@@ -191,26 +52,22 @@ const fetch = (req, res) => {
   }
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   const newCarData = req.body;
 
   try {
     if (!isValidCar(newCarData)) throw createCarBadDataError(newCarData);
 
-    const newCar = {
-      id: createId(),
-      ...newCarData,
-    };
-
-    database.cars.push(newCar);
+    const newCar = await CarModel.create(newCarData);
 
     res.status(201).json(newCar);
+
   } catch ({ status, message }) {
     res.status(status).json({ message });
   }
 };
 
-const replace = (req, res) => {
+const replace = async (req, res) => {
   const carId = req.params.id;
   const {
     model,
@@ -240,23 +97,26 @@ const replace = (req, res) => {
   try {
     if (!isValidCar(newCarData)) throw createCarBadDataError(newCarData);
 
-    const foundCarIndex = database.cars.findIndex(createCmpById(carId));
-    if (foundCarIndex === -1) throw createCarNotFoundError(carId);
-
-    const updatedCar = {
-      id: database.cars[foundCarIndex].id,
-      ...newCarData,
-    };
-
-    database.cars[foundCarIndex] = updatedCar;
+    const updatedCar = await CarModel.findByIdAndUpdate(
+      carId,
+      newCarData,
+      { new: true, runValidators: true }
+    );
+    if (updatedCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(updatedCar);
-  } catch ({ status, message }) {
-    res.status(status).json({ message });
+
+  } catch (error) {
+    const { status, message } = error;
+    if (status && message) {
+      res.status(status).json({ message });
+    } else {
+      res.status(400).json({ message: error.message });
+    }
   }
 };
 
-const update = (req, res) => {
+const update = async (req, res) => {
   const carId = req.params.id;
   const {
     model,
@@ -284,32 +144,31 @@ const update = (req, res) => {
   });
 
   try {
-    const foundCarIndex = database.cars.findIndex(createCmpById(carId));
-    if (foundCarIndex === -1) throw createCarNotFoundError(carId);
+    const updatedCar = await CarModel.findByIdAndUpdate(
+      carId,
+      newCarData,
+      { new: true }
+    );
 
-    const updatedCar = {
-      ...database.cars[foundCarIndex],
-      ...newCarData,
-    };
-
-    database.cars[foundCarIndex] = updatedCar;
+    if (updatedCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(updatedCar);
+
   } catch ({ status, message }) {
     res.status(status).json({ message });
   }
 };
 
-const remove = (req, res) => {
+const remove = async (req, res) => {
   const carId = req.params.id;
 
   try {
-    const foundCarIndex = database.cars.findIndex(createCmpById(carId));
-    if (foundCarIndex === -1) throw createCarNotFoundError(carId);
+    const deletedCar = await CarModel.findByIdAndDelete(carId)
 
-    const [deletedCar] = database.cars.splice(foundCarIndex, 1);
+    if (deletedCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(deletedCar);
+    
   } catch ({ status, message }) {
     res.status(status).json({ message });
   }

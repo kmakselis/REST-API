@@ -10,7 +10,7 @@ const carSchema = Schema({
 		required: true,
 	},
 	categoryId: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 	color: {
@@ -40,12 +40,11 @@ const carSchema = Schema({
 	img: {
 		type: String,
 		required: true,
-	}
-},
-	{
-		timeStamps: true
-	});
+	},
+}, {
+	timestamps: true
+});
 
-	const CarModel = model('Car', carSchema);
+const CarModel = model('Car', carSchema);
 
-	module.exports = CarModel;
+module.exports = CarModel;
