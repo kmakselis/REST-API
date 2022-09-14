@@ -8,8 +8,8 @@ const carsRouter = require('./routers/cars-router');
 
 const server = express();
 
-const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION_ADMIN } = process.env;
-const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION_ADMIN;
+const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION } = process.env;
+const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION;
 
 try {
   if (!constantsConfiguredInEnvFile) {
@@ -24,7 +24,7 @@ try {
   // Routes
   server.use('/cars', carsRouter);
 
-  mongoose.connect(DB_CONNECTION_ADMIN, (err) => {
+  mongoose.connect(DB_CONNECTION, (err) => {
     if (err) {
       throw err.message;
     }
@@ -34,7 +34,7 @@ try {
         console.error('Serverio paleidimo klaida');
       }
 
-      console.log(`serveris veikia ant ${SERVER_PROTOCOL}://${SERVER_DOMAIN}:${SERVER_PORT}`);
+      console.log(`server launched on ${SERVER_PROTOCOL}://${SERVER_DOMAIN}:${SERVER_PORT}`);
     });
   });
 
