@@ -1,13 +1,8 @@
 const { removeEmptyProps } = require('../helpers');
-const { RequestError,
-  createBadDataError,
-  createNotFoundError,
-  sendErrorResponse
-} = require('../helpers/errors/index')
+const { createNotFoundError, sendErrorResponse } = require('../helpers/errors');
 const CarModel = require('../models/car-model');
 
 const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
-const createCarBadDataError = (dataObj) => createBadDataError(`Car data is invalid:\n${JSON.stringify(dataObj, null, 4)}`);
 
 const fetchAll = async (req, res) => {
   try {
@@ -32,7 +27,7 @@ const create = async (req, res) => {
   const newCarData = req.body;
 
   try {
-    if (!CarModel.validate(newCarData)) throw createCarBadDataError(newCarData);
+    CarModel.validate(newCarData);
 
     const newCar = await CarModel.create(newCarData);
 
@@ -69,7 +64,7 @@ const replace = async (req, res) => {
   };
 
   try {
-    if (!CarModel.validate(newCarData)) throw createCarBadDataError(newCarData);
+    CarModel.validate(newCarData);
 
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
@@ -111,7 +106,7 @@ const update = async (req, res) => {
   });
 
   try {
-    if (!CarModel.validateUpdate(newCarData)) throw createCarBadDataError(newCarData);
+    CarModel.validateUpdate(newCarData);
 
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
@@ -130,7 +125,7 @@ const remove = async (req, res) => {
   const carId = req.params.id;
 
   try {
-    const deletedCar = await CarModel.findByIdAndDelete(carId)
+    const deletedCar = await CarModel.findByIdAndDelete(carId);
 
     if (deletedCar === null) throw createCarNotFoundError(carId);
 
