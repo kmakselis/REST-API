@@ -1,4 +1,9 @@
 const { removeEmptyProps } = require('../helpers');
+const { RequestError,
+  createBadDataError,
+  createNotFoundError,
+  sendErrorResponse
+} = require('../helpers/errors/index')
 const CarModel = require('../models/car-model');
 
 const isValidCar = ({
@@ -23,20 +28,15 @@ const isValidCar = ({
 && price !== undefined && typeof price === 'string' && price !== ''
 && img !== undefined && typeof img === 'string' && img !== '';
 
-const createCarNotFoundError = (carId) => ({
-  message: `Car with id '${carId}' was not found`,
-  status: 404
-});
-
-const createCarBadDataError = (dataObj) => ({
-  message: `Car data is invalid:\n${JSON.stringify(dataObj, null, 4)}`,
-  status: 400
-});
+const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
+const createCarBadDataError = (dataObj) => createBadDataError(`Car data is invalid:\n${JSON.stringify(dataObj, null, 4)}`);
 
 const fetchAll = async (req, res) => {
-  const carDocuments = await CarModel.find();
+  try {
+    const carDocuments = await CarModel.find();
 
-  res.status(200).json(carDocuments);
+    res.status(200).json(carDocuments);
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const fetch = async (req, res) => {
@@ -47,9 +47,7 @@ const fetch = async (req, res) => {
     if (foundCar === undefined) throw createCarNotFoundError(carId);
 
     res.status(200).json(foundCar);
-  } catch ({ status, message }) {
-    res.status(status).json({ message });
-  }
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const create = async (req, res) => {
@@ -62,9 +60,7 @@ const create = async (req, res) => {
 
     res.status(201).json(newCar);
 
-  } catch ({ status, message }) {
-    res.status(status).json({ message });
-  }
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const replace = async (req, res) => {
@@ -106,14 +102,7 @@ const replace = async (req, res) => {
 
     res.status(200).json(updatedCar);
 
-  } catch (error) {
-    const { status, message } = error;
-    if (status && message) {
-      res.status(status).json({ message });
-    } else {
-      res.status(400).json({ message: error.message });
-    }
-  }
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const update = async (req, res) => {
@@ -154,9 +143,7 @@ const update = async (req, res) => {
 
     res.status(200).json(updatedCar);
 
-  } catch ({ status, message }) {
-    res.status(status).json({ message });
-  }
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const remove = async (req, res) => {
@@ -168,10 +155,8 @@ const remove = async (req, res) => {
     if (deletedCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(deletedCar);
-    
-  } catch ({ status, message }) {
-    res.status(status).json({ message });
-  }
+
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 module.exports = {
