@@ -6,28 +6,6 @@ const { RequestError,
 } = require('../helpers/errors/index')
 const CarModel = require('../models/car-model');
 
-const isValidCar = ({
-  model,
-  engine,
-  categoryId,
-  color,
-  gearbox,
-  maxSpeed,
-  power,
-  zeroToHundred,
-  price,
-  img,
-}) => model !== undefined && typeof model === 'string' && model !== ''
-&& engine !== undefined && typeof engine === 'string' && engine !== ''
-&& categoryId !== undefined && typeof categoryId === 'string' && engine !== ''
-&& color !== undefined && typeof color === 'string' && color !== ''
-&& gearbox !== undefined && typeof gearbox === 'string' && gearbox !== ''
-&& maxSpeed !== undefined && typeof maxSpeed === 'string' && maxSpeed !== ''
-&& power !== undefined && typeof power === 'string' && power !== ''
-&& zeroToHundred !== undefined && typeof zeroToHundred === 'string' && zeroToHundred !== ''
-&& price !== undefined && typeof price === 'string' && price !== ''
-&& img !== undefined && typeof img === 'string' && img !== '';
-
 const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
 const createCarBadDataError = (dataObj) => createBadDataError(`Car data is invalid:\n${JSON.stringify(dataObj, null, 4)}`);
 
@@ -54,7 +32,7 @@ const create = async (req, res) => {
   const newCarData = req.body;
 
   try {
-    if (!isValidCar(newCarData)) throw createCarBadDataError(newCarData);
+    if (!CarModel.validate(newCarData)) throw createCarBadDataError(newCarData);
 
     const newCar = await CarModel.create(newCarData);
 
@@ -91,7 +69,7 @@ const replace = async (req, res) => {
   };
 
   try {
-    if (!isValidCar(newCarData)) throw createCarBadDataError(newCarData);
+    if (!CarModel.validate(newCarData)) throw createCarBadDataError(newCarData);
 
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
@@ -133,6 +111,8 @@ const update = async (req, res) => {
   });
 
   try {
+    if (!CarModel.validateUpdate(newCarData)) throw createCarBadDataError(newCarData);
+
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
       newCarData,
