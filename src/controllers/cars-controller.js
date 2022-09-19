@@ -4,8 +4,6 @@ const CarModel = require('../models/car-model');
 
 const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
 
-const joinableProps = ['categoryId'];
-
 const fetchAll = async (req, res) => {
   const { joinBy } = req.query;
 
