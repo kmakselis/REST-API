@@ -4,20 +4,29 @@ const CarModel = require('../models/car-model');
 
 const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
 
-const fetchAll = async (req, res) => {
-  try {
-    const carDocuments = await CarModel.find();
+const joinableProps = ['categoryId'];
 
-    res.status(200).json(carDocuments);
-  } catch (err) { sendErrorResponse(err, res); }
+const fetchAll = async (req, res) => {
+  const { joinBy } = req.query;
+
+    try {
+      const carDocuments = joinBy === 'categoryId'
+      ? await CarModel.find().populate('categoryId')
+      : await CarModel.find();
+
+      res.status(200).json(carDocuments);
+    } catch (err) { sendErrorResponse(err, res); }
 };
 
 const fetch = async (req, res) => {
   const carId = req.params.id;
+  const { joinBy } = req.query;
 
   try {
-    const foundCar = await CarModel.findById(carId);
-    if (foundCar === undefined) throw createCarNotFoundError(carId);
+    const foundCar = joinBy === 'categoryId'
+    ? await CarModel.find().populate('categoryId')
+    : await CarModel.find();
+    if (foundCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(foundCar);
   } catch (err) { sendErrorResponse(err, res); }

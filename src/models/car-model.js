@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 const yup = require('yup');
 
 const carSchema = Schema({
@@ -11,7 +11,8 @@ const carSchema = Schema({
 		required: true,
 	},
 	categoryId: {
-		type: String,
+		type: Schema.Types.ObjectId,
+		ref: 'Category',
 		required: true,
 	},
 	color: {
@@ -55,8 +56,13 @@ const carValidationSchema = yup.object().shape({
 		.string().typeError('Car engine must be a string')
 		.required('Car engine is required'),
 	categoryId: yup
-		.string().typeError('Car categoryId must be a string')
-		.required('Car categoryId is required'),
+		.string().typeError('Cup.categoryId must be a string')
+		.test(
+			'is-mongo-object-id',
+			'Car.categoryId must be valid MongoDB object Id',
+			Types.ObjectId.isValid
+		)
+		.required('Cup.categoryId is required'),
 	color: yup
 		.string().typeError('Car color must be a string')
 		.required('Car color is required'),
@@ -83,7 +89,12 @@ const carValidationSchema = yup.object().shape({
 const carUpdateValidationSchema = yup.object().shape({
 	model: yup.string().typeError('Car model must be a string'),
 	engine: yup.string().typeError('Car engine must be a string'),
-	categoryId: yup.string().typeError('Car categoryId must be a string'),
+	categoryId: yup.string().typeError('Car categoryId must be a string')
+	.test(
+		'is-mongo-object-id',
+		'Car.categoryId must be valid MongoDB object Id',
+		Types.ObjectId.isValid
+	),
 	color: yup.string().typeError('Car color must be a string'),
 	gearbox: yup.string().typeError('Car gearbox must be a string'),
 	maxSpeed: yup.string().typeError('Car maxSpeed must be a string'),
