@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const carsRouter = require('./routers/cars-router');
+const apiRouter = require('./routers/api-router');
 
 const server = express();
 
@@ -23,7 +23,7 @@ try {
   server.use(express.static('public'));
 
   // Routes
-  server.use('/cars', carsRouter);
+  server.use('/api', apiRouter);
 
   mongoose.connect(DB_CONNECTION, (err) => {
     if (err) {

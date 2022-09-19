@@ -6,7 +6,7 @@ const {
   replace,
   update,
   remove,
-} = require('../controllers/cars-controller');
+} = require('../../controllers/cars-controller');
 
 const carsRouter = Router();
 
