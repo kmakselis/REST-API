@@ -20,6 +20,7 @@ try {
   server.use(express.json());
   server.use(morgan('tiny'));
   server.use(cors());
+  server.use(express.static('public'));
 
   // Routes
   server.use('/cars', carsRouter);
