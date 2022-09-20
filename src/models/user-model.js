@@ -45,9 +45,9 @@ const userValidationSchema = yup.object({
 		.matches(/[A-Z]/, 'User password must have at least one uppercase letter')
 		.matches(/\d/, 'User password must have at least one number')
 		.matches(/\W/, 'User password must have at least one special symbol'),
-	passwordConfirmation: yup.string().typeError('User passwordConfirmation must be a string')
-		.required('User passwordConfirmation is required')
-		.oneOf([yup.ref('password')], 'User passwordConfirmation does not match User password'),
+	passwordConfirmation: yup.string().typeError('User password confirmation must be a string')
+		.required('User password confirmation is required')
+		.oneOf([yup.ref('password')], 'User password confirmation does not match User password'),
 	role: yup.string().typeError('User role must be a string')
 		.oneOf(['USER', 'ADMIN']),
 	img: yup
@@ -76,8 +76,8 @@ const userUpdateValidationSchema = yup.object({
 		.matches(/[A-Z]/, 'User password must have at least one uppercase letter')
 		.matches(/\d/, 'User password must have at least one number')
 		.matches(/\W/, 'User password must have at least one special symbol')
-		.oneOf([yup.ref('passwordConfirmation')], 'User password does not match User passwordConfirmation'),
-	passwordConfirmation: yup.string().typeError('User passwordConfirmation must be a string'),
+		.oneOf([yup.ref('passwordConfirmation')], 'User password does not match User password confirmation'),
+	passwordConfirmation: yup.string().typeError('User password confirmation must be a string'),
 	role: yup.string().typeError('User role must be a string').oneOf(['USER', 'ADMIN']),
 	img: yup.string().typeError('User.img must be a string')
 });
