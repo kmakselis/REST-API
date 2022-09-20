@@ -1,84 +1,100 @@
 const { removeEmptyProps } = require('../helpers');
 const { createNotFoundError, sendErrorResponse } = require('../helpers/errors');
+const { hashPassword } = require('../helpers/password-encryption');
 const UserModel = require('../models/user-model');
 
 const createUserNotFoundError = (userId) => createNotFoundError(`User with id '${userId}' was not found`);
 
 const fetchAll = async (req, res) => {
   try {
-    const userDocuments = await UserModel.find();
+    const userDocs = await UserModel.find();
 
-    console.log(validationResult);
-
-    res.status(200).json(userDocuments);
+    res.status(200).json(userDocs);
   } catch (err) { sendErrorResponse(err, res); }
 };
 
 const fetch = async (req, res) => {
   const userId = req.params.id;
-  const { joinBy } = req.query;
 
   try {
-    const foundUser = joinBy === 'categoryId'
-      ? await UserModel.findById(userId).populate('categoryId')
-      : await UserModel.findById(userId);
-    if (foundUser === null) throw createUserNotFoundError(userId);
+    const foundUserDoc = await UserModel.findById(userId);
+    if (foundUserDoc === null) throw createUserNotFoundError(userId);
 
-    res.status(200).json(foundUser);
+    res.status(200).json(foundUserDoc);
   } catch (err) { sendErrorResponse(err, res); }
 };
 
 const create = async (req, res) => {
-  const newUserData = req.body;
+  const requestData = req.body;
 
   try {
-    await UserModel.validateData(newUserData);
+    await UserModel.validateData(requestData);
+    const { email, password, role, img, } = requestData;
 
-    const newUser = await UserModel.create(newUserData)
+    const newUserDoc = await UserModel.create({
+      email,
+      password: await hashPassword(password),
+      role,
+      img
+    });
 
-    res.status(201).json(newUser)
+    res.status(201).json(newUserDoc)
 
   } catch (err) { sendErrorResponse(err, res); }
 };
 
 const replace = async (req, res) => {
   const userId = req.params.id;
-  const { title, description, categoryId, img, price } = req.body;
-  const newUserData = { title, description, categoryId, img, price };
+  const requestData = req.body;
 
   try {
-    await UserModel.validateData(newUserData);
+    await UserModel.validateData(requestData);
+    const { email, password, role, img, } = requestData;
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      newUserData,
-      { new: true, runValidators: true }
+    const userDoc = await UserModel.findById(userId);
+    if (userDoc === null) throw createUserNotFoundError(userId);
+
+    const replacedUserDoc = await UserModel.findOneAndReplace(
+      { id: userId },
+      {
+        email,
+        password: await hashPassword(password),
+        role,
+        img,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        __v: userDoc.__v,
+      },
+      { new: true }
     );
 
-    if (updatedUser === null) throw createUserNotFoundError(userId);
-
-    res.status(200).json(updatedUser)
+    res.status(200).json(replacedUserDoc)
 
   } catch (err) { sendErrorResponse(err, res); }
 };
 
 const update = async (req, res) => {
   const userId = req.params.id;
-  const { title, description, categoryId, img, price } = req.body;
-  const newUserData = removeEmptyProps({ title, description, categoryId, img, price });
+  const requestData = req.body;
 
   try {
-    await UserModel.validateUpdateData(newUserData);
+    await UserModel.validateUpdateData(requestData);
+    const { email, password, role, img, } = requestData;
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
+    const updatedUserDoc = await UserModel.findByIdAndUpdate(
       userId,
-      newUserData,
+      {
+        email,
+        password: password && await hashPassword(password),
+        role,
+        img
+      },
       { new: true }
     );
 
-    if (updatedUser === null) throw createUserNotFoundError(userId);
+    if (updatedUserDoc === null) throw createUserNotFoundError(userId);
 
-    res.status(200).json(updatedUser)
+    res.status(200).json(updatedUserDoc)
 
   } catch (err) { sendErrorResponse(err, res); }
 };

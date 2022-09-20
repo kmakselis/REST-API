@@ -17,7 +17,6 @@ const userSchema = Schema({
 	},
 	img: {
 		type: String,
-		required: true,
 	},
 }, {
 	timestamps: true
@@ -51,8 +50,7 @@ const userValidationSchema = yup.object({
 	role: yup.string().typeError('User role must be a string')
 		.oneOf(['USER', 'ADMIN']),
 	img: yup
-		.string().typeError('User img must be a string')
-		.required('User img is required'),
+		.string().typeError('User img must be a string'),
 });
 
 const userUpdateValidationSchema = yup.object({
