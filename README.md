@@ -12,6 +12,7 @@ npm i morgan
 npm i cors
 npm i dotenv
 npm i mongoose
+npm i bcrypt
 ```
 
 ## Launch server
