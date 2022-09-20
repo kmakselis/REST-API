@@ -104,8 +104,8 @@ const carUpdateValidationSchema = yup.object().shape({
 	img: yup.string().typeError('Car img address must be a string')
 });
 
-carSchema.statics.validate = (carData) => carValidationSchema.validateSync(carData);
-carSchema.statics.validateUpdate = (carData) => carUpdateValidationSchema.validateSync(carData);
+carSchema.statics.validateData = (carData) => carValidationSchema.validate(carData);
+carSchema.statics.validateUpdateData = (carData) => carUpdateValidationSchema.validate(carData);
 
 const CarModel = model('Car', carSchema);
 

@@ -34,7 +34,7 @@ const create = async (req, res) => {
   const newCarData = req.body;
 
   try {
-    CarModel.validate(newCarData);
+    await CarModel.validateData(newCarData);
 
     const newCar = await CarModel.create(newCarData);
 
@@ -71,7 +71,7 @@ const replace = async (req, res) => {
   };
 
   try {
-    CarModel.validate(newCarData);
+    await CarModel.validateData(newCarData);
 
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
@@ -113,7 +113,7 @@ const update = async (req, res) => {
   });
 
   try {
-    CarModel.validateUpdate(newCarData);
+    await CarModel.validateUpdateData(newCarData);
 
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,

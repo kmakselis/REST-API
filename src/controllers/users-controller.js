@@ -8,11 +8,6 @@ const fetchAll = async (req, res) => {
   try {
     const userDocuments = await UserModel.find();
 
-    const validationResult = await UserModel.validateUpdate({
-      email: 'serbentautas@gmail.com',
-      password: 'Vilnius1234!',
-    });
-
     console.log(validationResult);
 
     res.status(200).json(userDocuments);
@@ -37,7 +32,7 @@ const create = async (req, res) => {
   const newUserData = req.body;
 
   try {
-    UserModel.validate(newUserData);
+    await UserModel.validateData(newUserData);
 
     const newUser = await UserModel.create(newUserData)
 
@@ -52,7 +47,7 @@ const replace = async (req, res) => {
   const newUserData = { title, description, categoryId, img, price };
 
   try {
-    UserModel.validate(newUserData);
+    await UserModel.validateData(newUserData);
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
@@ -73,7 +68,7 @@ const update = async (req, res) => {
   const newUserData = removeEmptyProps({ title, description, categoryId, img, price });
 
   try {
-    UserModel.validateUpdate(newUserData);
+    await UserModel.validateUpdateData(newUserData);
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
