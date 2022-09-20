@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const apiRouter = require('./routers/api-router');
+const authRouter = require('./routers/auth-router');
 
 const server = express();
 
@@ -24,6 +25,7 @@ try {
 
   // Routes
   server.use('/api', apiRouter);
+  server.use('/auth', authRouter);
 
   mongoose.connect(DB_CONNECTION, (err) => {
     if (err) {

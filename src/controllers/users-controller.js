@@ -1,4 +1,3 @@
-const { removeEmptyProps } = require('../helpers');
 const { createNotFoundError, sendErrorResponse } = require('../helpers/errors');
 const { hashPassword } = require('../helpers/password-encryption');
 const UserModel = require('../models/user-model');
