@@ -7,13 +7,13 @@ const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${ca
 const fetchAll = async (req, res) => {
   const { joinBy } = req.query;
 
-    try {
-      const carDocuments = joinBy === 'categoryId'
+  try {
+    const carDocuments = joinBy === 'categoryId'
       ? await CarModel.find().populate('categoryId')
       : await CarModel.find();
 
-      res.status(200).json(carDocuments);
-    } catch (err) { sendErrorResponse(err, res); }
+    res.status(200).json(carDocuments);
+  } catch (err) { sendErrorResponse(err, res); }
 };
 
 const fetch = async (req, res) => {
@@ -22,8 +22,8 @@ const fetch = async (req, res) => {
 
   try {
     const foundCar = joinBy === 'categoryId'
-    ? await CarModel.findById(carId).populate('categoryId')
-    : await CarModel.findById(carId);
+      ? await CarModel.findById(carId).populate('categoryId')
+      : await CarModel.findById(carId);
     if (foundCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(foundCar);
@@ -97,7 +97,7 @@ const update = async (req, res) => {
     power,
     zeroToHundred,
     price,
-    img,
+    img
   } = req.body;
   const newCarData = removeEmptyProps({
     model,
@@ -109,12 +109,11 @@ const update = async (req, res) => {
     power,
     zeroToHundred,
     price,
-    img,
+    img
   });
 
   try {
     await CarModel.validateUpdateData(newCarData);
-
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
       newCarData,

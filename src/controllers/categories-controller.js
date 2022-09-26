@@ -59,10 +59,10 @@ const replace = async (req, res) => {
 const update = async (req, res) => {
   const categoryId = req.params.id;
   const { title, image } = req.body;
-  const newCategoryData = { title, image };
+  const newCategoryData = removeEmptyProps({ title, image });
 
   try {
-    CategoryModel.validateUpdateData(newCategoryData);
+    await CategoryModel.validateUpdateData(newCategoryData);
     const updatedCategory = await CategoryModel.findByIdAndUpdate(
       categoryId,
       newCategoryData,

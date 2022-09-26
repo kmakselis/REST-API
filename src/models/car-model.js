@@ -56,13 +56,13 @@ const carValidationSchema = yup.object().shape({
 		.string().typeError('Car engine must be a string')
 		.required('Car engine is required'),
 	categoryId: yup
-		.string().typeError('Cup.categoryId must be a string')
+		.string().typeError('Car categoryId must be a string')
 		.test(
 			'is-mongo-object-id',
-			'Car.categoryId must be valid MongoDB object Id',
+			'Car categoryId must be valid MongoDB object Id',
 			Types.ObjectId.isValid
 		)
-		.required('Cup.categoryId is required'),
+		.required('CategoryId is required'),
 	color: yup
 		.string().typeError('Car color must be a string')
 		.required('Car color is required'),
@@ -92,7 +92,7 @@ const carUpdateValidationSchema = yup.object().shape({
 	categoryId: yup.string().typeError('Car categoryId must be a string')
 	.test(
 		'is-mongo-object-id',
-		'Car.categoryId must be valid MongoDB object Id',
+		'Car categoryId must be valid MongoDB object Id',
 		Types.ObjectId.isValid
 	),
 	color: yup.string().typeError('Car color must be a string'),
@@ -104,8 +104,8 @@ const carUpdateValidationSchema = yup.object().shape({
 	img: yup.string().typeError('Car img address must be a string')
 });
 
-carSchema.statics.validateData = (carData) => carValidationSchema.validate(carData);
-carSchema.statics.validateUpdateData = (carData) => carUpdateValidationSchema.validate(carData);
+carSchema.statics.validateData = (carData) => carValidationSchema.validate(carData)
+carSchema.statics.validateUpdateData = (carData) => carUpdateValidationSchema.validate(carData)
 
 const CarModel = model('Car', carSchema);
 
