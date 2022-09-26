@@ -22,8 +22,8 @@ const fetch = async (req, res) => {
 
   try {
     const foundCar = joinBy === 'categoryId'
-    ? await CarModel.find().populate('categoryId')
-    : await CarModel.find();
+    ? await CarModel.findById(carId).populate('categoryId')
+    : await CarModel.findById(carId);
     if (foundCar === null) throw createCarNotFoundError(carId);
 
     res.status(200).json(foundCar);
