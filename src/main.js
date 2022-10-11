@@ -9,8 +9,8 @@ const authRouter = require('./routers/auth-router');
 
 const server = express();
 
-const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION } = process.env;
-const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION;
+const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION, TOKEN_SECRET } = process.env;
+const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION && TOKEN_SECRET;
 
 try {
   if (!constantsConfiguredInEnvFile) {

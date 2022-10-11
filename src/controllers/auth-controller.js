@@ -1,5 +1,6 @@
 const { createNotFoundError, sendErrorResponse } = require('../helpers/errors');
 const { hashPassword, comparePasswords } = require('../helpers/password-encryption');
+const { createToken } = require('../helpers/token');
 const UserModel = require('../models/user-model');
 
 const login = async (req, res) => {
@@ -18,7 +19,7 @@ const login = async (req, res) => {
 
     res.status(200).json({ 
       user: userDoc,
-      token: 'ateityje būsiu token\'as'
+      token: createToken({ email: userDoc.email, role: userDoc.role })
     });
   } catch (err) {
     sendErrorResponse(err, res);
@@ -40,7 +41,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
       user: userDoc,
-      token: 'ateityje būsiu token\'as'
+      token: createToken({ email: userDoc.email, role: userDoc.role })
     })
 
   } catch (err) { sendErrorResponse(err, res); }
