@@ -55,10 +55,17 @@ cors
 ```
 CORS allows to configure the web API's security. It has to do with allowing other domains to make requests against web API.
 
-#### Install middleware
+```
+json web token
+```
+JSON Web Tokens (JWTs) supports authorization and information exchange.
+
+
+#### Installed middleware
 ```
 npm install morgan
 npm install cors
+npm install jsonwebtoken
 ```
 
 ## Launch server
