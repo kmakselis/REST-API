@@ -6,9 +6,9 @@ const createUserNotFoundError = (userId) => createNotFoundError(`User with id '$
 
 const fetchAll = async (req, res) => {
   try {
-    const userDocs = await UserModel.find();
+    const usersDocs = await UserModel.find();
 
-    res.status(200).json(userDocs);
+    res.status(200).json(usersDocs);
   } catch (err) { sendErrorResponse(err, res); }
 };
 
