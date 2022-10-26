@@ -4,13 +4,13 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const apiRouter = require('./routers/api-router');
-const authRouter = require('./routers/auth-router');
+const carsRouter = require('./routers/cars-router');
+const categoriesRouter = require('./routers/categories-router');
 
 const server = express();
 
-const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION, TOKEN_SECRET } = process.env;
-const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION && TOKEN_SECRET;
+const { SERVER_DOMAIN, SERVER_PROTOCOL, SERVER_PORT, DB_CONNECTION } = process.env;
+const constantsConfiguredInEnvFile = SERVER_DOMAIN && SERVER_PROTOCOL && SERVER_PORT && DB_CONNECTION;
 
 try {
   if (!constantsConfiguredInEnvFile) {
@@ -24,8 +24,8 @@ try {
   server.use(express.static('public'));
 
   // Routes
-  server.use('/api', apiRouter);
-  server.use('/auth', authRouter);
+  server.use('/cars', carsRouter);
+  server.use('/categories', categoriesRouter);
 
   mongoose.connect(DB_CONNECTION, (err) => {
     if (err) {

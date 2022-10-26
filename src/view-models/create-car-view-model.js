@@ -10,8 +10,6 @@ const createCarViewModel = (carDoc) => ({
   zeroToHundred: carDoc.zeroToHundred,
   price: carDoc.price,
   img: carDoc.img,
-  createdAt: carDoc.createdAt,
-  updatedAt: carDoc.updatedAt,
 });
 
 module.exports = createCarViewModel;

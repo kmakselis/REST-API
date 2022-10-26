@@ -7,18 +7,10 @@ const createCarViewModel = require('../view-models/create-car-view-model');
 const createCarNotFoundError = (carId) => createNotFoundError(`Car with id '${carId}' was not found`);
 
 const fetchAll = async (req, res) => {
-  const { joinBy } = req.query;
-  const joinedDocuments = joinBy === 'categoryId';
-
   try {
-    const carDocuments = joinBy === 'categoryId'
-      ? await CarModel.find().populate('categoryId')
-      : await CarModel.find();
+    const carPopulatedDocs = await CarModel.find().populate('categoryId');
 
-    res.status(200).json(joinedDocuments
-      ? carDocuments.map(createCarPopulatedViewModel)
-      : carDocuments.map(createCarViewModel)
-      );
+    res.status(200).json(carPopulatedDocs.map(createCarPopulatedViewModel));
   } catch (err) { sendErrorResponse(err, res); }
 };
 
@@ -49,48 +41,6 @@ const create = async (req, res) => {
     const newCar = await CarModel.create(newCarData);
 
     res.status(201).json(createCarViewModel(newCar));
-
-  } catch (err) { sendErrorResponse(err, res); }
-};
-
-const replace = async (req, res) => {
-  const carId = req.params.id;
-  const {
-    model,
-    engine,
-    categoryId,
-    color,
-    gearbox,
-    maxSpeed,
-    power,
-    zeroToHundred,
-    price,
-    img,
-  } = req.body;
-  const newCarData = {
-    model,
-    engine,
-    categoryId,
-    color,
-    gearbox,
-    maxSpeed,
-    power,
-    zeroToHundred,
-    price,
-    img,
-  };
-
-  try {
-    await CarModel.validateData(newCarData);
-
-    const updatedCarDoc = await CarModel.findByIdAndUpdate(
-      carId,
-      newCarData,
-      { new: true, runValidators: true }
-    );
-    if (updatedCarDoc === null) throw createCarNotFoundError(carId);
-
-    res.status(200).json(createCarViewModel(updatedCarDoc));
 
   } catch (err) { sendErrorResponse(err, res); }
 };
@@ -154,7 +104,6 @@ module.exports = {
   fetchAll,
   fetch,
   create,
-  replace,
   update,
   remove,
 };
